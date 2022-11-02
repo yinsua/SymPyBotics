@@ -21,8 +21,11 @@ def regressor(rbtdef, geom, ifunc=None):
     for p, parm in enumerate(dynparms):
 
         for i in range(rbtdef.dof):
-            rbtdeftmp.Le[i] = list(map(
-                lambda x: 1 if x == parm else 0, rbtdef.Le[i]))
+            if rbtdef.inertial:
+                le_len = len(rbtdef.Le[i])
+                rbtdeftmp.Le[i] = [0]*le_len
+            else:
+                rbtdeftmp.Le[i] = list(map(lambda x: 0, rbtdef.Le[i]))
             rbtdeftmp.l[i] = Matrix(rbtdef.l[i]).applyfunc(
                 lambda x: 1 if x == parm else 0)
             rbtdeftmp.m[i] = 1 if rbtdef.m[i] == parm else 0

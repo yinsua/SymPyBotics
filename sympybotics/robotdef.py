@@ -95,6 +95,7 @@ class RobotDef(object):
         self.driveinertiamodel = default_driveinertiamodel
 
         self.gravityacc = default_gravityacc
+        self.inertial = True
 
         self._gen_symbols()
 
@@ -284,7 +285,8 @@ class RobotDef(object):
 
             if parm_order == 'khalil' or parm_order == 'tensor first':
                 # Lxx Lxy Lxz Lyy Lyz Lzz lx ly lz m
-                parms += self.Le[i]
+                if self.inertial:
+                    parms += self.Le[i]
                 parms += sympy.flatten(self.l[i])
                 parms += [self.m[i]]
 
@@ -292,7 +294,8 @@ class RobotDef(object):
                 # m lx ly lz Lxx Lxy Lxz Lyy Lyz Lzz
                 parms += [self.m[i]]
                 parms += sympy.flatten(self.l[i])
-                parms += self.Le[i]
+                if self.inertial:
+                    parms += self.Le[i]
 
             else:
                 raise Exception(
